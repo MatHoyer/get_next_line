@@ -16,54 +16,89 @@
 # define BUFFER_SIZE 1
 #endif
 
-#include <stdio.h>
+int	valide(char *str, int start)
+{
+	int	i;
 
+	i = start;
+	while (str[i])
+	{
+		if (str[i] == '\n')
+			return (i);
+		i++;
+	}
+	return (0);
+}
+
+#include <stdio.h>
 char	*get_next_line(int fd)
 {
-	static char			*buffer;
+	static char			*buffer = NULL;
 	char				*buffer_tmp;
 	static int			deb = 0;
+	int					val;
 
-	buffer = malloc(BUFFER_SIZE + 1);
-	read(fd, buffer, BUFFER_SIZE);
+	buffer_tmp = malloc(BUFFER_SIZE + 1);
+	val = read(fd, buffer_tmp, BUFFER_SIZE);
+	buffer_tmp[val] = 0;
+	if (!buffer)
+		buffer = ft_strdup(buffer_tmp, 0, val);
+	else
+		buffer = ft_strjoin(buffer, buffer_tmp);
 	while (buffer[deb])
 	{
-		if (!buffer[deb + 1])
+		if (!valide(buffer, deb) && val == BUFFER_SIZE)
 		{
 			buffer_tmp = malloc(BUFFER_SIZE + 1);
-			read(fd, buffer_tmp, BUFFER_SIZE);
+			val = read(fd, buffer_tmp, BUFFER_SIZE);
+			buffer_tmp[val] = 0;
 			buffer = ft_strjoin(buffer, buffer_tmp);
 		}
 		if (buffer[deb] == '\n')
 		{
 			deb += 1;
-			return (ft_strdup(buffer, find_retour(buffer, deb - 2), deb - 1));
+			return (ft_strdup(buffer, find_retour(buffer, deb - 2), deb));
 		}
 		deb++;
+	}
+	if (val < BUFFER_SIZE && val != 0)
+	{
+		val = 0;
+		return (ft_strdup(buffer, find_retour(buffer, (deb + val) - 2), (deb + val)));
 	}
 	return (NULL);
 }
 
+
 int main()
 {
 	int file = open("fichier.txt", O_RDONLY);
+	char *str = get_next_line(file);
+	printf("%s", str);
+	free(str);
+	str = get_next_line(file);
+	printf("%s", str);
+	free(str);
+	str = get_next_line(file);
+	printf("%s", str);
+	free(str);
+	str = get_next_line(file);
+	printf("%s", str);
+	free(str);
+	str = get_next_line(file);
+	printf("%s", str);
+	free(str);
+	str = get_next_line(file);
+	printf("%s", str);
+	free(str);
+	str = get_next_line(file);
+	printf("%s", str);
+	free(str);
+	str = get_next_line(file);
+	printf("%s", str);
+	free(str);
 	
-	printf("%s", get_next_line(file));
-	close(file);
-	file = open("fichier.txt", O_RDONLY);
-	printf("%s", get_next_line(file));
-	close(file);
-	file = open("fichier.txt", O_RDONLY);
-	printf("%s", get_next_line(file));
-	close(file);
-	file = open("fichier.txt", O_RDONLY);
-	printf("%s", get_next_line(file));
-close(file);
-	file = open("fichier.txt", O_RDONLY);
-	printf("%s", get_next_line(file));
-	close(file);
-	file = open("fichier.txt", O_RDONLY);
-	printf("%s", get_next_line(file));
+
 	close(file);
 	return 0;
 }
