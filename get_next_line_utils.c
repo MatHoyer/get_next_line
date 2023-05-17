@@ -22,33 +22,6 @@ int	ft_strlen(const char *s)
 	return (i);
 }
 
-char	*ft_strjoin(char *s1, char *s2)
-{
-	int		i;
-	char	*conc;
-
-	if (!s1 || !s2)
-		return (NULL);
-	i = 0;
-	conc = malloc(ft_strlen(s1) + ft_strlen(s2) + 1);
-	if (conc == NULL)
-		return (NULL);
-	while (i < ft_strlen(s1))
-	{
-		conc[i] = s1[i];
-		i++;
-	}
-	while (i < ft_strlen(s1) + ft_strlen(s2))
-	{
-		conc[i] = s2[i - ft_strlen(s1)];
-		i++;
-	}
-	conc[i] = '\0';
-	free(s1);
-	free(s2);
-	return (conc);
-}
-
 void	*ft_memcpy(void *dest, const void *src, int deb, int end)
 {
 	const char	*s;
@@ -69,7 +42,7 @@ void	*ft_memcpy(void *dest, const void *src, int deb, int end)
 	return (dest);
 }
 
-char	*ft_strdup(const char *s, int deb, int end)
+char	*ft_strdup(char *s, int deb, int end)
 {
 	char	*str;
 
@@ -81,12 +54,39 @@ char	*ft_strdup(const char *s, int deb, int end)
 	str[end - deb] = '\0';
 	return (str);
 }
-
-int	find_retour(char *str, int i)
+ 
+char	*ft_strdup_free(char *s, int deb, int end)
 {
-	while (i != 0 && str[i] != '\n')
+	char	*str;
+
+	str = ft_strdup(s, deb, end);
+	free(s);
+	return (str);
+}
+
+char	*ft_strjoin(char *s1, char *s2, int t_s2)
+{
+	int		i;
+	char	*conc;
+
+	if (!s1)
+		return (ft_strdup_free(s2, 0, t_s2));
+	i = 0;
+	conc = malloc(ft_strlen(s1) + t_s2 + 1);
+	if (conc == NULL)
+		return (NULL);
+	while (i < ft_strlen(s1))
 	{
-		i--;
+		conc[i] = s1[i];
+		i++;
 	}
-	return (i);
+	while (i < ft_strlen(s1) + t_s2)
+	{
+		conc[i] = s2[i - ft_strlen(s1)];
+		i++;
+	}
+	conc[i] = '\0';
+	free(s1);
+	free(s2);
+	return (conc);
 }

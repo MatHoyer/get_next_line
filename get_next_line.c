@@ -30,6 +30,17 @@ int	valide(char *str, int start)
 	return (0);
 }
 
+int	find_retour(char *str, int i)
+{
+	while (i != 0 && str[i] != '\n')
+	{
+		i--;
+	}
+	if (str[i] == '\n')
+		return (i + 1);
+	return (0);
+}
+
 #include <stdio.h>
 char	*get_next_line(int fd)
 {
@@ -38,21 +49,20 @@ char	*get_next_line(int fd)
 	static int			deb = 0;
 	int					val;
 
-	buffer_tmp = malloc(BUFFER_SIZE + 1);
+	if (!fd)
+		return (NULL);
+	buffer_tmp = malloc((BUFFER_SIZE + 1) * sizeof(char));
 	val = read(fd, buffer_tmp, BUFFER_SIZE);
-	buffer_tmp[val] = 0;
-	if (!buffer)
-		buffer = ft_strdup(buffer_tmp, 0, val);
-	else
-		buffer = ft_strjoin(buffer, buffer_tmp);
+	buffer_tmp[val] = '\0';
+	buffer = ft_strjoin(buffer, buffer_tmp, val);
 	while (buffer[deb])
 	{
-		if (!valide(buffer, deb) && val == BUFFER_SIZE)
+		if (!valide(buffer, deb) && val > 0)
 		{
 			buffer_tmp = malloc(BUFFER_SIZE + 1);
 			val = read(fd, buffer_tmp, BUFFER_SIZE);
 			buffer_tmp[val] = 0;
-			buffer = ft_strjoin(buffer, buffer_tmp);
+			buffer = ft_strjoin(buffer, buffer_tmp, val);
 		}
 		if (buffer[deb] == '\n')
 		{
@@ -61,10 +71,10 @@ char	*get_next_line(int fd)
 		}
 		deb++;
 	}
-	if (val < BUFFER_SIZE && val != 0)
+	if (val == 0)
 	{
-		val = 0;
-		return (ft_strdup(buffer, find_retour(buffer, (deb + val) - 2), (deb + val)));
+		
+		return (ft_strdup(buffer, find_retour(buffer, deb), deb));
 	}
 	return (NULL);
 }
@@ -74,28 +84,28 @@ int main()
 {
 	int file = open("fichier.txt", O_RDONLY);
 	char *str = get_next_line(file);
-	printf("%s", str);
+	printf("1%s", str);
 	free(str);
 	str = get_next_line(file);
-	printf("%s", str);
+	printf("2%s", str);
 	free(str);
 	str = get_next_line(file);
-	printf("%s", str);
+	printf("3%s", str);
 	free(str);
 	str = get_next_line(file);
-	printf("%s", str);
+	printf("4%s", str);
 	free(str);
 	str = get_next_line(file);
-	printf("%s", str);
+	printf("5%s", str);
 	free(str);
 	str = get_next_line(file);
-	printf("%s", str);
+	printf("6%s", str);
 	free(str);
 	str = get_next_line(file);
-	printf("%s", str);
+	printf("7%s", str);
 	free(str);
 	str = get_next_line(file);
-	printf("%s", str);
+	printf("8%s", str);
 	free(str);
 	
 

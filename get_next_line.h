@@ -19,12 +19,10 @@
 
 char	*get_next_line(int fd);
 
-char	*ft_strdup(const char *s, int deb, int end);
+char	*ft_strdup(char *s, int deb, int end);
 
 int		ft_strlen(const char *s);
 
-char	*ft_strjoin(char *s1, char *s2);
-
-int		find_retour(char *str, int i);
+char	*ft_strjoin(char *s1, char *s2, int t_s2);
 
 #endif
