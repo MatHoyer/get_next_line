@@ -32,8 +32,8 @@ int	valide(char *str, int start)
 
 int	find_retour(char *str, int i)
 {
-	if (str[i] == '\n')
-		return (i);
+	if (i == 0 && str[0] == '\n')
+		return (0);
 	while (i != 0 && str[i] != '\n')
 	{
 		i--;
@@ -70,6 +70,11 @@ char	*get_next_line(int fd)
 		{
 			deb += 1;
 			return (ft_strdup(buffer, find_retour(buffer, deb - 2), deb));
+		}
+		else if (buffer[deb] == '\n' && deb == 0)
+		{
+			deb += 1;
+			return (ft_strdup(buffer, find_retour(buffer, 0), deb));
 		}
 		deb++;
 	}
