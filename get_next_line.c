@@ -49,13 +49,13 @@ char	*get_next_line(int fd)
 	static int			deb = 0;
 	int					val;
 
-	if (!fd)
+	if (fd < 0 || read(fd, 0, 0) < 0 || BUFFER_SIZE <= 0)
 		return (NULL);
 	buffer_tmp = malloc((BUFFER_SIZE + 1) * sizeof(char));
 	val = read(fd, buffer_tmp, BUFFER_SIZE);
 	buffer_tmp[val] = '\0';
 	buffer = ft_strjoin(buffer, buffer_tmp, val);
-	while (buffer[deb])
+	while (deb >= 0 && buffer[deb])
 	{
 		if (!valide(buffer, deb) && val > 0)
 		{
@@ -64,23 +64,24 @@ char	*get_next_line(int fd)
 			buffer_tmp[val] = 0;
 			buffer = ft_strjoin(buffer, buffer_tmp, val);
 		}
-		if (buffer[deb] == '\n')
+		if (buffer[deb] == '\n' && deb >= 2)
 		{
 			deb += 1;
 			return (ft_strdup(buffer, find_retour(buffer, deb - 2), deb));
 		}
 		deb++;
 	}
-	if (val == 0)
+	if (val == 0 && deb >= 0)
 	{
-		
-		return (ft_strdup(buffer, find_retour(buffer, deb), deb));
+		val = deb;
+		deb = -1;
+		return (ft_strdup(buffer, find_retour(buffer, val), val));
 	}
 	return (NULL);
 }
 
 
-int main()
+/*int main()
 {
 	int file = open("fichier.txt", O_RDONLY);
 	char *str = get_next_line(file);
@@ -111,4 +112,4 @@ int main()
 
 	close(file);
 	return 0;
-}
+}*/
