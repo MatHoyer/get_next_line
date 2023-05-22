@@ -34,16 +34,17 @@ int	find_retour(char *str, int i)
 {
 	if (i == 0 && str[0] == '\n')
 		return (0);
-	while (i != 0 && str[i] != '\n')
+	while (i != 0)
 	{
 		i--;
+		if (str[i] == '\n')
+			return (i + 1);
 	}
-	if (str[i] == '\n')
-		return (i + 1);
 	return (0);
 }
 
 #include <stdio.h>
+
 char	*get_next_line(int fd)
 {
 	static char			*buffer = NULL;
@@ -66,15 +67,10 @@ char	*get_next_line(int fd)
 			buffer_tmp[val] = 0;
 			buffer = ft_strjoin(buffer, buffer_tmp, val);
 		}
-		if (buffer[deb] == '\n' && deb >= 2)
+		if (buffer[deb] == '\n')
 		{
 			deb += 1;
-			return (ft_strdup(buffer, find_retour(buffer, deb - 2), deb));
-		}
-		else if (buffer[deb] == '\n' && deb == 0)
-		{
-			deb += 1;
-			return (ft_strdup(buffer, find_retour(buffer, 0), deb));
+			return (ft_strdup(buffer, find_retour(buffer, deb - 1), deb));
 		}
 		deb++;
 	}
@@ -82,7 +78,9 @@ char	*get_next_line(int fd)
 	{
 		val = deb;
 		deb = -1;
-		return (ft_strdup(buffer, find_retour(buffer, val - 1), val));
+		if (val != find_retour(buffer, val))
+			return (ft_strdup(buffer, find_retour(buffer, val), val));
+		return (NULL);
 	}
 	return (NULL);
 }
@@ -92,28 +90,34 @@ char	*get_next_line(int fd)
 {
 	int file = open("fichier.txt", O_RDONLY);
 	char *str = get_next_line(file);
-	printf("1%s", str);
+	printf("(1)%s", str);
 	free(str);
 	str = get_next_line(file);
-	printf("2%s", str);
+	printf("(2)%s", str);
 	free(str);
 	str = get_next_line(file);
-	printf("3%s", str);
+	printf("(3)%s", str);
 	free(str);
 	str = get_next_line(file);
-	printf("4%s", str);
+	printf("(4)%s", str);
 	free(str);
 	str = get_next_line(file);
-	printf("5%s", str);
+	printf("(5)%s", str);
 	free(str);
 	str = get_next_line(file);
-	printf("6%s", str);
+	printf("(6)%s", str);
 	free(str);
 	str = get_next_line(file);
-	printf("7%s", str);
+	printf("(7)%s", str);
 	free(str);
 	str = get_next_line(file);
-	printf("8%s", str);
+	printf("(8)%s", str);
+	free(str);
+	str = get_next_line(file);
+	printf("(9)%s", str);
+	free(str);
+	str = get_next_line(file);
+	printf("(10)%s", str);
 	free(str);
 	
 
