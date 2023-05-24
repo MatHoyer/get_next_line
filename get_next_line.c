@@ -43,52 +43,56 @@ int	find_retour(char *str, int i)
 	return (0);
 }
 
-#include <stdio.h>
+char	*get_read(int fd, char *buffer, int *val)
+{
+	char	*buffer_tmp;
+
+	buffer_tmp = malloc((BUFFER_SIZE + 1) * sizeof(char));
+	if (!buffer_tmp)
+		return (NULL);
+	*val = read(fd, buffer_tmp, BUFFER_SIZE);
+	if (*val <= 0 && !buffer)
+	{
+		free(buffer_tmp);
+		return (NULL);
+	}
+	buffer_tmp[*val] = '\0';
+	buffer = ft_strjoin(buffer, buffer_tmp, *val);
+	return (buffer);
+}
 
 char	*get_next_line(int fd)
 {
 	static char			*buffer = NULL;
-	char				*buffer_tmp;
 	static int			deb = 0;
 	int					val;
 
-	if (fd < 0 || read(fd, 0, 0) < 0 || BUFFER_SIZE <= 0)
+	if (fd < 0 || read(fd, 0, 0) < 0 || BUFFER_SIZE <= 0 || deb == -1)
 		return (NULL);
-	buffer_tmp = malloc((BUFFER_SIZE + 1) * sizeof(char));
-	val = read(fd, buffer_tmp, BUFFER_SIZE);
-	buffer_tmp[val] = '\0';
-	buffer = ft_strjoin(buffer, buffer_tmp, val);
-	while (deb >= 0 && buffer[deb])
+	buffer = get_read(fd, buffer, &val);
+	while (buffer && deb >= 0 && buffer[deb])
 	{
 		if (!valide(buffer, deb) && val > 0)
-		{
-			buffer_tmp = malloc(BUFFER_SIZE + 1);
-			val = read(fd, buffer_tmp, BUFFER_SIZE);
-			buffer_tmp[val] = 0;
-			buffer = ft_strjoin(buffer, buffer_tmp, val);
-		}
-		if (buffer[deb] == '\n')
-		{
-			deb += 1;
-			return (ft_strdup(buffer, find_retour(buffer, deb - 1), deb));
-		}
+			buffer = get_read(fd, buffer, &val);
 		deb++;
+		if (buffer[deb - 1] == '\n')
+			return (ft_strdup(buffer, find_retour(buffer, deb - 1), deb));
 	}
-	if (val == 0 && deb > 0)
+	if (buffer && val == 0 && deb > 0)
 	{
 		val = deb;
 		deb = -1;
 		if (val != find_retour(buffer, val))
 			return (ft_strdup(buffer, find_retour(buffer, val), val));
-		return (NULL);
 	}
+	free(buffer);
 	return (NULL);
 }
 
-
-/*int main()
+/*#include <stdio.h>
+int main()
 {
-	int file = open("fichier.txt", O_RDONLY);
+	int file = open("trip/files/big_line_with_nl", O_RDONLY);
 	char *str = get_next_line(file);
 	printf("(1)%s", str);
 	free(str);

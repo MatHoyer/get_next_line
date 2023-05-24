@@ -54,7 +54,7 @@ char	*ft_strdup(char *s, int deb, int end)
 	str[end - deb] = '\0';
 	return (str);
 }
- 
+
 char	*ft_strdup_free(char *s, int deb, int end)
 {
 	char	*str;
@@ -67,22 +67,24 @@ char	*ft_strdup_free(char *s, int deb, int end)
 char	*ft_strjoin(char *s1, char *s2, int t_s2)
 {
 	int		i;
+	int		t_s1;
 	char	*conc;
 
 	if (!s1)
 		return (ft_strdup_free(s2, 0, t_s2));
+	t_s1 = ft_strlen(s1);
 	i = 0;
-	conc = malloc(ft_strlen(s1) + t_s2 + 1);
+	conc = malloc(t_s1 + t_s2 + 1);
 	if (conc == NULL)
 		return (NULL);
-	while (i < ft_strlen(s1))
+	while (i < t_s1)
 	{
 		conc[i] = s1[i];
 		i++;
 	}
-	while (i < ft_strlen(s1) + t_s2)
+	while (i < t_s1 + t_s2)
 	{
-		conc[i] = s2[i - ft_strlen(s1)];
+		conc[i] = s2[i - t_s1];
 		i++;
 	}
 	conc[i] = '\0';
